@@ -14,7 +14,8 @@ import AdminDashboard from './pages/AdminDashboard.jsx';
 import { useAuth } from './context/AuthContext.jsx';
 
 function Protected({ children }) {
-  const { admin } = useAuth();
+  const { admin, loading } = useAuth();
+  if (loading) return null; // or a spinner component if you want a visual
   return admin ? children : <Navigate to="/admin/login" replace />;
 }
 

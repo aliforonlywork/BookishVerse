@@ -1,35 +1,56 @@
+const asyncHandler = require('express-async-handler');
 const Article = require('../models/Article');
 
-const getArticles = async (req, res) => {
+const escapeRegex = (str) => str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+
+const getArticles = asyncHandler(async (req, res) => {
   const { search } = req.query;
   const query = { status: 'published' };
-  if (search) query.title = new RegExp(search, 'i');
-  res.json(await Article.find(query).sort('-publishedAt'));
-};
+  if (search) query.title = new RegExp(escapeRegex(search), 'i');
+  res.json(
+    await Article.find(query)
+      .populate('category', 'name slug')
+      .populate('author', 'name')
+      .sort('-publishedAt')
+  );
+});
 
-const getArticleById = async (req, res) => {
-  const article = await Article.findById(req.params.id);
+const getArticleById = asyncHandler(async (req, res) => {
+  const article = await Article.findById(req.params.id)
+    .populate('category', 'name slug')
+    .populate('author', 'name');
   if (!article) return res.status(404).json({ message: 'Article not found' });
   article.views += 1;
   await article.save();
   res.json(article);
+});
+
+// 'slug' and 'views' are deliberately left out — both are server-controlled only
+const ALLOWED_FIELDS = ['title', 'featuredImage', 'content', 'category', 'tags', 'author', 'status', 'publishedAt'];
+const pickAllowed = (body) => {
+  const data = {};
+  for (const field of ALLOWED_FIELDS) {
+    if (body[field] !== undefined) data[field] = body[field];
+  }
+  return data;
 };
 
-const createArticle = async (req, res) => {
-  if (!req.body.publishedAt) req.body.publishedAt = new Date();
-  res.status(201).json(await Article.create(req.body));
-};
+const createArticle = asyncHandler(async (req, res) => {
+  const data = pickAllowed(req.body);
+  if (!data.publishedAt) data.publishedAt = new Date();
+  res.status(201).json(await Article.create(data));
+});
 
-const updateArticle = async (req, res) => {
-  const article = await Article.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true });
+const updateArticle = asyncHandler(async (req, res) => {
+  const article = await Article.findByIdAndUpdate(req.params.id, pickAllowed(req.body), { new: true, runValidators: true });
   if (!article) return res.status(404).json({ message: 'Article not found' });
   res.json(article);
-};
+});
 
-const deleteArticle = async (req, res) => {
+const deleteArticle = asyncHandler(async (req, res) => {
   const article = await Article.findByIdAndDelete(req.params.id);
   if (!article) return res.status(404).json({ message: 'Article not found' });
   res.json({ message: 'Article removed' });
-};
+});
 
 module.exports = { getArticles, getArticleById, createArticle, updateArticle, deleteArticle };

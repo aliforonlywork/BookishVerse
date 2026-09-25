@@ -3,8 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext.jsx';
 
 export default function AdminLogin() {
-  const [email, setEmail] = useState('admin@bookishverse.com');
-  const [password, setPassword] = useState('admin123');
+const [email, setEmail] = useState('');
+const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const { login } = useAuth();
   const navigate = useNavigate();
