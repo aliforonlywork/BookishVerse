@@ -1,5 +1,6 @@
 const asyncHandler = require('express-async-handler');
 const Category = require('../models/Category');
+const Book = require('../models/Book'); // NEW
 
 const getCategories = asyncHandler(async (req, res) => res.json(await Category.find().sort('name')));
 
@@ -21,6 +22,10 @@ const updateCategory = asyncHandler(async (req, res) => {
 });
 
 const deleteCategory = asyncHandler(async (req, res) => {
+  const inUse = await Book.countDocuments({ category: req.params.id });
+  if (inUse > 0) {
+    return res.status(400).json({ message: `Cannot delete — used by ${inUse} book(s). Reassign them first.` });
+  }
   const cat = await Category.findByIdAndDelete(req.params.id);
   if (!cat) return res.status(404).json({ message: 'Category not found' });
   res.json({ message: 'Category removed' });

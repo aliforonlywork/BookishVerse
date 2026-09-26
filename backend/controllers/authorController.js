@@ -1,5 +1,6 @@
 const asyncHandler = require('express-async-handler');
 const Author = require('../models/Author');
+const Book = require('../models/Book');
 
 const getAuthors = asyncHandler(async (req, res) => res.json(await Author.find().sort('name')));
 
@@ -27,6 +28,10 @@ const updateAuthor = asyncHandler(async (req, res) => {
 });
 
 const deleteAuthor = asyncHandler(async (req, res) => {
+  const inUse = await Book.countDocuments({ author: req.params.id });
+  if (inUse > 0) {
+    return res.status(400).json({ message: `Cannot delete — used by ${inUse} book(s). Reassign them first.` });
+  }
   const author = await Author.findByIdAndDelete(req.params.id);
   if (!author) return res.status(404).json({ message: 'Author not found' });
   res.json({ message: 'Author removed' });

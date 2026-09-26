@@ -4,6 +4,8 @@ import HeroSection from '../components/HeroSection.jsx';
 import BookGrid from '../components/BookGrid.jsx';
 import CategoryCard from '../components/CategoryCard.jsx';
 import Loading from '../components/Loading.jsx';
+import AdSlot from '../components/AdSlot.jsx';
+import SEO from '../components/SEO.jsx';
 
 export default function Home() {
   const [featured, setFeatured] = useState(null);
@@ -20,11 +22,15 @@ export default function Home() {
 
   return (
     <main>
+      <SEO />
       <HeroSection />
       <section className="block wrap">
         <h2>Featured Books</h2>
         {featured ? <BookGrid books={featured} /> : <Loading />}
       </section>
+
+      <AdSlot size="leaderboard" />
+
       <section className="block wrap">
         <h2>Browse Categories</h2>
         {categories ? (
@@ -41,6 +47,9 @@ export default function Home() {
         <h2>Latest Summaries</h2>
         {latest ? <BookGrid books={latest} /> : <Loading />}
       </section>
+
+      <AdSlot size="leaderboard" />
+
       <section className="block wrap">
         <h2>Popular Books</h2>
         {popular ? <BookGrid books={popular} /> : <Loading />}

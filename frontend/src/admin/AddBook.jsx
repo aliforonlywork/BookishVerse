@@ -1,12 +1,13 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../services/api';
+import ImageUploader from '../components/ImageUploader.jsx';
 
 export default function AddBook() {
   const [categories, setCategories] = useState([]);
   const [authors, setAuthors] = useState([]);
   const [form, setForm] = useState({
-    title: '', author: '', category: '', description: '', summary: '', publicationYear: 2026, featured: false
+    title: '', author: '', category: '', description: '', summary: '', coverImage: '', publicationYear: 2026, featured: false
   });
   const navigate = useNavigate();
 
@@ -41,6 +42,7 @@ export default function AddBook() {
       <input name="publicationYear" type="number" value={form.publicationYear} onChange={change} />
       <textarea name="description" placeholder="Description" value={form.description} onChange={change} />
       <textarea name="summary" placeholder="Summary" value={form.summary} onChange={change} />
+      <ImageUploader value={form.coverImage} onChange={(url) => setForm({ ...form, coverImage: url })} />
       <label>
         <input type="checkbox" name="featured" checked={form.featured} onChange={change} /> Featured
       </label>

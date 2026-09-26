@@ -7,13 +7,16 @@ const helmet = require('helmet');                          // NEW
 const mongoSanitize = require('express-mongo-sanitize');    // NEW
 const rateLimit = require('express-rate-limit'); 
 const connectDB = require('./config/db');
+const uploadRoutes = require('./routes/uploadRoutes');
 const { notFound, errorHandler } = require('./middleware/errorMiddleware');
 
 const authRoutes = require('./routes/authRoutes');
 const bookRoutes = require('./routes/bookRoutes');
+const analyticsRoutes = require('./routes/analyticsRoutes'); // NEW
 const categoryRoutes = require('./routes/categoryRoutes');
 const authorRoutes = require('./routes/authorRoutes');
 const articleRoutes = require('./routes/articleRoutes');
+const sitemapRoutes = require('./routes/sitemapRoutes');
 
 connectDB();
 
@@ -38,9 +41,12 @@ app.use('/api', apiLimiter);
 app.get('/api/health', (req, res) => res.json({ status: 'ok' }));
 app.use('/api/auth', authRoutes);
 app.use('/api/books', bookRoutes);
+app.use('/api/analytics', analyticsRoutes); // NEW
 app.use('/api/categories', categoryRoutes);
 app.use('/api/authors', authorRoutes);
+app.use('/api/upload', uploadRoutes);
 app.use('/api/articles', articleRoutes);
+app.use('/sitemap.xml', sitemapRoutes);
 
 app.use(notFound);
 app.use(errorHandler);

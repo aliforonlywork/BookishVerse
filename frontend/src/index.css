@@ -58,3 +58,33 @@ a { text-decoration: none; color: inherit; }
 .muted { color: var(--muted); }
 .cta { display: inline-block; margin-top: 16px; background: var(--teal); color: #fff; padding: 10px 20px; border-radius: 999px; font-weight: 600; }
 select { padding: 8px 12px; border-radius: 8px; border: 1px solid var(--border); background: var(--bg-elev); }
+
+.ad-slot {
+  margin: 2rem auto;
+  text-align: center;
+}
+
+.affiliate-box {
+  margin-top: 2rem;
+  padding: 1.25rem;
+  border: 1px solid #eee;
+  border-radius: 8px;
+  background: #fafafa;
+}
+
+.affiliate-disclosure {
+  margin-top: 0.75rem;
+  font-size: 0.8rem;
+  color: #888;
+}
+
+.top-lists {
+  display: flex;
+  gap: 2rem;
+  margin-top: 2rem;
+  flex-wrap: wrap;
+}
+.top-lists > div {
+  flex: 1;
+  min-width: 250px;
+}
